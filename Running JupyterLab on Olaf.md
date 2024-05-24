@@ -1,3 +1,5 @@
+### Running JupyterLab on Olaf
+
 As Python <= 3.10 is a necessity for `esm_tools`, it might be better to use a separate environment for JupyterLab where newer versions of Python can be used.
 
 Step 1: On Olaf, add the `conda-forge` channel for packages. (Tip: Always use the conda-forge channel which will be essential for proper running of dask later)
