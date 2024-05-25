@@ -78,3 +78,41 @@ Copy the URL that starts with `http://localhost:`
 5. Paste the URL in a web browser to open the JupyterLab.
 
 Voila!
+
+---
+
+### Taking care of the environment
+
+Be wary of installing new packages or tampering with the environment as it can cause troubles with `dask`.  Environments can be rolled back to previous versions in two ways.
+
+#### Method 1 - a shareable file
+
+If you want to make substantial changes to your environment, backup the environment by exporting it to a `yml` file as following:
+
+```bash
+conda activate myenv
+conda env export > environment.yml
+```
+The name of the `yml` file is arbitrary.
+
+The file can be used to restore the environment.
+
+```bash
+conda env create -f environment.yml
+```
+
+#### Method 2 - the builtin --revisions method
+
+Conda tracks the revisions made to an environment. You can list the revisions using:
+
+```bash
+conda list --revisions
+```
+
+To go back to a version 'when things were fine':
+
+```bash
+conda install --revision=REVNUM
+```
+
+where `REVNUM` refers to the revision number you want restored.
