@@ -68,7 +68,7 @@ Step 6: Actually running JupyterLab on Olaf.
 
 Copy the URL that starts with `http://localhost:`
 
-4. On your local machine, open up a terminal and establish the tunnel.
+4. On your local machine, open up a terminal and establish the tunnel. This does not produce any output.
 ```bash
    jcon olaf
 ```
