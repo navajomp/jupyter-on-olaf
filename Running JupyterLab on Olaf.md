@@ -1,4 +1,4 @@
-### Running JupyterLab on Olaf
+## Running JupyterLab on Olaf
 
 As Python <= 3.10 is a necessity for `esm_tools`, it might be better to use a separate environment for JupyterLab where newer versions of Python can be used.
 
@@ -116,3 +116,90 @@ conda install --revision=REVNUM
 ```
 
 where `REVNUM` refers to the revision number you want restored.
+
+---
+
+### How to parallelize your computations?
+
+Step 1: Setting up mpirun directories.
+
+Create a dedicated directory for our mpirun needs. 
+
+```bash
+mkdir /proj/internal_group/iccp/$USER/mpi
+```
+
+Create the following two files, to start and reset mpi, inside the folder.
+
+File 1 `/proj/internal_group/iccp/$USER/mpi/start.sh`:
+
+```bash
+#!/bin/sh
+mpirun --np 6 dask-mpi --worker-class distributed.Worker --scheduler-file /proj/internal_group/iccp/$USER/mpi/scheduler.json --dashboard-address :8787 --memory-limit=90e9 --local-directory /proj/internal_group/iccp/$USER/mpi/tmp/
+```
+Here we use 6 nodes in a session. Ideally, you can use more nodes when the cluster is not busy -- at nights or on the weekends. 
+
+File 2 `/proj/internal_group/iccp/$USER/mpi/reset.sh`:
+
+```bash
+#!/bin/sh
+
+rm -rf worker*
+rm *.lock
+rm /proj/internal_group/iccp/$USER/mpi/scheduler.json
+rm -rf /proj/internal_group/iccp/$USER/mpi/tmp/
+rm -rf dask-worker-space
+```
+
+You may add aliases to make things easier. Add the lines to `.bashrc`.
+
+```bash
+alias start='bash /proj/internal_group/iccp/$USER/mpi/start.sh'
+alias reset='bash /proj/internal_group/iccp/$USER/mpi/reset.sh'
+```
+
+Step 2: Running dask on notebooks
+
+1. Log into Olaf. Initiate JupyterLab.
+```bash
+conda activate myenv
+jlab
+```
+Copy the URL that starts with `https://localhost.`
+
+2. On a new tab, log into Olaf again and initiate the mpirun command
+```bash
+conda activate myenv
+start
+```
+You should see the cluster information as output.
+
+3. Open a new terminal window. On your local machine, initiate the tunnel. This doesn't produce any output.
+```bash
+jcondask olaf
+```
+Paste the URL in a browser to open JupyterLab running on Olaf with dask enabled.
+
+4. In your python notebook, run the following cell before anything else:
+```python
+from dask.distributed import Client
+client = Client(scheduler_file='<path to your mpi folder>/scheduler.json')
+```
+---
+#### (OPTIONAL) Using the `dask-labextension`
+Monitoring your dask processes can be cumbersome, but it gets easier with the `dask-dashboard` which provies a fancy realtime graphical view of the jobs, their progress, and other details.
+
+Once you initiate JupyterLab with dask, open up a terminal from within the browser (File -> New -> Terminal).
+
+To install the `dask-labextension`, 
+
+```bash
+conda activate myenv
+conda install dask-labextension
+```
+
+You may have to refresh the webpage. You should now see a yellow-orange-red icon of the extension on the left taskbar.
+
+The extension works only after the Step 2.4 cell for client initilization is executed. Once the client is live, click on the extension icon, and type in `https://localhost/8889/proxy/8787` in the address bar. It should produce several monitoring options.
+
+More details can be found [here](https://github.com/dask/dask-labextension).
