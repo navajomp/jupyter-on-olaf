@@ -56,26 +56,26 @@ Steps 1-5 are done only once.
 
 Step 6: Actually running JupyterLab on Olaf.
 
-1. Log in to Olaf
-2. Activate the environment
+6.1. Log in to Olaf
+6.2. Activate the environment
 ```bash
    conda activate myenv
 ```
-3. Initiate Jupyterlab
+6.3. Initiate Jupyterlab
 ```bash
    jlab
 ```
 
 Copy the URL that starts with `http://localhost:`
 
-4. On your local machine, open up a terminal and establish the tunnel. This does not produce any output.
+6.4. On your local machine, open up a terminal and establish the tunnel. This does not produce any output.
 ```bash
    jcon olaf
 ```
 
 `olaf` is the name used in `.ssh/config`
 
-5. Paste the URL in a web browser to open the JupyterLab.
+6.5. Paste the URL in a web browser to open the JupyterLab.
 
 Voila!
 
@@ -160,27 +160,27 @@ alias reset='bash /proj/internal_group/iccp/$USER/mpi/reset.sh'
 
 Step 2: Running dask on notebooks
 
-1. Log into Olaf. Initiate JupyterLab.
+2.1. Log into Olaf. Initiate JupyterLab.
 ```bash
 conda activate myenv
 jlab
 ```
 Copy the URL that starts with `https://localhost.`
 
-2. On a new tab, log into Olaf again and initiate the mpirun command
+2.2. On a new tab, log into Olaf again and initiate the mpirun command
 ```bash
 conda activate myenv
 start
 ```
 You should see the cluster information as output.
 
-3. Open a new terminal window. On your local machine, initiate the tunnel. This doesn't produce any output.
+2.3. Open a new terminal window. On your local machine, initiate the tunnel. This doesn't produce any output.
 ```bash
 jcondask olaf
 ```
 Paste the URL in a browser to open JupyterLab running on Olaf with dask enabled.
 
-4. In your python notebook, run the following cell before anything else:
+2.4. In your python notebook, run the following cell before anything else:
 ```python
 from dask.distributed import Client
 client = Client(scheduler_file='<path to your mpi folder>/scheduler.json')
