@@ -75,9 +75,7 @@ Copy the URL that starts with `http://localhost:`
 
 `olaf` is the name used in `.ssh/config`
 
-6.5. Paste the URL in a web browser to open the JupyterLab.
-
-Voila!
+6.5. Paste the URL in a web browser to open the JupyterLab!
 
 ---
 
