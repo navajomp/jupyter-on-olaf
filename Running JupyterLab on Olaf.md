@@ -183,6 +183,9 @@ Paste the URL in a browser to open JupyterLab running on Olaf with dask enabled.
 from dask.distributed import Client
 client = Client(scheduler_file='<path to your mpi folder>/scheduler.json')
 ```
+
+Once you complete your analysis, run the `reset` script to clear the workers.
+
 ---
 #### (OPTIONAL) Using the `dask-labextension`
 Monitoring your dask processes can be cumbersome, but it gets easier with the `dask-dashboard` which provies a fancy realtime graphical view of the jobs, their progress, and other details.
