@@ -133,9 +133,9 @@ File 1 `/proj/internal_group/iccp/$USER/mpi/start.sh`:
 
 ```bash
 #!/bin/sh
-mpirun --np 6 dask-mpi --worker-class distributed.Worker --scheduler-file /proj/internal_group/iccp/$USER/mpi/scheduler.json --dashboard-address :8787 --memory-limit=90e9 --local-directory /proj/internal_group/iccp/$USER/mpi/tmp/
+mpirun --np 8 dask-mpi --worker-class distributed.Worker --scheduler-file /proj/internal_group/iccp/$USER/mpi/scheduler.json --nthreads 1 --dashboard-address :8787 --memory-limit=1e11 --local-directory /proj/internal_group/iccp/$USER/mpi/tmp/
 ```
-Here we use 6 nodes in a session. Ideally, you can use more nodes when the cluster is not busy -- at nights or on the weekends. 
+Here we use 8 nodes in a session. Ideally, you can use more nodes when the cluster is not busy -- at nights or on the weekends. But, you will have to change this script or make an alternate script for that.
 
 File 2 `/proj/internal_group/iccp/$USER/mpi/reset.sh`:
 
@@ -143,7 +143,6 @@ File 2 `/proj/internal_group/iccp/$USER/mpi/reset.sh`:
 #!/bin/sh
 
 rm -rf worker*
-rm *.lock
 rm /proj/internal_group/iccp/$USER/mpi/scheduler.json
 rm -rf /proj/internal_group/iccp/$USER/mpi/tmp/
 rm -rf dask-worker-space
@@ -165,23 +164,24 @@ jlab
 ```
 Copy the URL that starts with `https://localhost.`
 
-2.2. On a new tab, log into Olaf again and initiate the mpirun command
+2.2. Open a new terminal window on your local machine, and initiate the tunnel as follows. This doesn't produce any output.
+```bash
+jcondask olaf
+```
+2.3 Paste the URL in a browser to open JupyterLab running on Olaf with dask enabled.
+
+2.4. Open terminal from the Jupyterlab launcher, and initiate the mpirun command
 ```bash
 conda activate myenv
 start
 ```
 You should see the cluster information as output.
 
-2.3. Open a new terminal window. On your local machine, initiate the tunnel. This doesn't produce any output.
-```bash
-jcondask olaf
-```
-Paste the URL in a browser to open JupyterLab running on Olaf with dask enabled.
-
-2.4. In your python notebook, run the following cell before anything else:
+2.4. In your python notebook, run the following cell before you do any dask operations:
 ```python
 from dask.distributed import Client
 client = Client(scheduler_file='<path to your mpi folder>/scheduler.json')
+client
 ```
 
 Once you complete your analysis, run the `reset` script to clear the workers.
